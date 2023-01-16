@@ -1,35 +1,3 @@
-terraform{
-	required_providers{
-		keycloak = {
-			source = "mrparkers/keycloak"
-			version = ">= 2.2.0"
-		}
-	}
-}
-
-variable "client_id" {
-  default = "admin-cli"
-}
-
-variable "username" {
-  default = "admin"
-}
-
-variable "password" {    
-  default = "password"
-}
-
-variable "server_url" {    
-  default = "http://localhost:8080/auth"
-}
-
-provider "keycloak" {
-	client_id 	= var.client_id
-	username 	= var.username
-	password 	= var.password
-	url 		= var.server_url
-}
-
 resource "keycloak_realm" "realm" {
 	realm									= "example-realm"
 	display_name							= "Example Realm"

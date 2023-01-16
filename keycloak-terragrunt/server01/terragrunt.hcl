@@ -1,5 +1,5 @@
 terraform {
-  source = "/home/gayan/Documents/T/keycloak-terraform/main.tf"
+  source = "/home/gayan/Documents/keycloak-config-with-terragrunt/keycloak-terraform"
 }
 
 inputs = {
