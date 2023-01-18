@@ -4,6 +4,4 @@ terraform {
 
 inputs = {
   server_url = "http://localhost:8080/auth"
-  username = "admin"
-  password = "password"
 }
