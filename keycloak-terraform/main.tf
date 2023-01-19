@@ -49,3 +49,18 @@ resource "keycloak_openid_client" "service" {
 	service_accounts_enabled					= true  
 	exclude_session_state_from_auth_response	= false  
 }
+
+resource "keycloak_role" "role_one" {
+  realm_id = keycloak_realm.realm.id
+  name = "role_one"
+}
+
+resource "keycloak_role" "role_two" {
+  realm_id = keycloak_realm.realm.id
+  name = "role_two"
+}
+
+resource "keycloak_role" "role_three" {
+  realm_id = keycloak_realm.realm.id
+  name = "role_three"
+}
