@@ -50,17 +50,21 @@ resource "keycloak_openid_client" "service" {
 	exclude_session_state_from_auth_response	= false  
 }
 
+
 resource "keycloak_role" "role_one" {
-  realm_id = keycloak_realm.realm.id
-  name = "role_one"
+	realm_id = keycloak_realm.realm.id
+  	name = "role_one"
+	count = contains(var.included_scopes, "scope_one") ? 1 : 0
 }
 
 resource "keycloak_role" "role_two" {
-  realm_id = keycloak_realm.realm.id
-  name = "role_two"
+  	realm_id = keycloak_realm.realm.id
+  	name = "role_two"
+	count = contains(var.included_scopes, "scope_two") ? 1 : 0
 }
 
 resource "keycloak_role" "role_three" {
-  realm_id = keycloak_realm.realm.id
-  name = "role_three"
+  	realm_id = keycloak_realm.realm.id
+  	name = "role_three"
+	count = contains(var.included_scopes, "scope_three") ? 1 : 0
 }
