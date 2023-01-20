@@ -4,4 +4,5 @@ terraform {
 
 inputs = {
   server_url = "http://localhost:8090/auth"
+  included_scopes = ["scope_one"]
 }
