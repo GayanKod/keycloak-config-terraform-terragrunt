@@ -157,25 +157,49 @@ resource "keycloak_authentication_execution_config" "config" {
 
 # Create Identify Provider and Config 
 
-resource "keycloak_oidc_identity_provider" "oidc" {
-  realm             = keycloak_realm.realm.id
-  alias             = "oidc"
-  authorization_url = var.token_url
-  token_url         = var.server_url
-  client_id         = "example_id"
-  client_secret     = "example_token"
-  default_scopes    = "openid random profile"
+resource "keycloak_oidc_identity_provider" "mesterID" {
+  realm             	= keycloak_realm.realm.id
+  alias             	= "mesterID"
+  display_name 			= "Mester ID"
+  enabled 				= true
+  store_token 			= false
+  trust_email 			= false 
+  authorization_url 	= var.token_url
+  token_url         	= var.server_url
+  client_id         	= "sample-client-id"
+  client_secret     	= "sample-client-secret"
+  default_scopes    	= "openid profile email"
+  sync_mode 			= "FORCE"
+  logout_url 			= "https://example.com/logout_url"
+  backchannel_supported = false
+  user_info_url 		= "https://example.com/user_info_url"
+  issuer 				= "https://example.com/issuer"
+  jwks_url 				= "https://example.com/.well-known/jwks.json"
+  validate_signature 	= true
 }
 
-resource "keycloak_attribute_importer_identity_provider_mapper" "oidc" {
+
+resource "keycloak_attribute_importer_identity_provider_mapper" "email" {
   realm                   = keycloak_realm.realm.id
-  name                    = "email-attribute-importer"
-  claim_name              = "my-email-claim"
-  identity_provider_alias = keycloak_oidc_identity_provider.oidc.alias
+  name                    = "email"
+  claim_name              = "email"
+  identity_provider_alias = keycloak_oidc_identity_provider.mesterID.alias
   user_attribute          = "email"
 
   # extra_config with syncMode is required in Keycloak 10+
   extra_config = {
-    syncMode = "INHERIT"
+    syncMode = "IMPORT"
   }
 }
+
+# resource "keycloak_attribute_importer_identity_provider_mapper" "ad-user-mapper" {
+#   realm                   = keycloak_realm.realm.id
+#   name                    = "ad-user-mapper"
+#   identity_provider_alias = keycloak_oidc_identity_provider.mesterID.alias
+
+#   # extra_config with syncMode is required in Keycloak 10+
+#   extra_config = {
+#     syncMode = "IMPORT"
+# 	mapper = "HardcodedMapper"
+#   }
+# }
