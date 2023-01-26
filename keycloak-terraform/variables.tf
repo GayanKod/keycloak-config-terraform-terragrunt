@@ -18,6 +18,10 @@ variable "server_url" {
   default = "http://localhost:8080/auth"
 }
 
+variable "token_url" {    
+  default = "http://localhost:8080/token"
+}
+
 variable "included_scopes" {
   type = list(string)
   default = ["scope_one", "scope_two"]
