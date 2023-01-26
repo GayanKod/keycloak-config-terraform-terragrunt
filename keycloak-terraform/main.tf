@@ -163,19 +163,21 @@ resource "keycloak_oidc_identity_provider" "mesterID" {
   display_name 			= "Mester ID"
   enabled 				= true
   store_token 			= false
-  trust_email 			= false 
+  trust_email 			= false
+  hide_on_login_page 	= false 
   authorization_url 	= var.token_url
   token_url         	= var.server_url
-  client_id         	= "sample-client-id"
-  client_secret     	= "sample-client-secret"
-  default_scopes    	= "openid profile email"
-  sync_mode 			= "FORCE"
   logout_url 			= "https://example.com/logout_url"
   backchannel_supported = false
+  disable_user_info 	= false
   user_info_url 		= "https://example.com/user_info_url"
+  client_id         	= "sample-client-id"
+  client_secret     	= "sample-client-secret"
   issuer 				= "https://example.com/issuer"
-  jwks_url 				= "https://example.com/.well-known/jwks.json"
+  default_scopes    	= "openid profile email"
   validate_signature 	= true
+  jwks_url 				= "https://example.com/.well-known/jwks.json"
+  sync_mode 			= "FORCE"
 }
 
 
