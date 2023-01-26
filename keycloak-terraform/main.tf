@@ -194,14 +194,3 @@ resource "keycloak_attribute_importer_identity_provider_mapper" "email" {
   }
 }
 
-# resource "keycloak_attribute_importer_identity_provider_mapper" "ad-user-mapper" {
-#   realm                   = keycloak_realm.realm.id
-#   name                    = "ad-user-mapper"
-#   identity_provider_alias = keycloak_oidc_identity_provider.mesterID.alias
-
-#   # extra_config with syncMode is required in Keycloak 10+
-#   extra_config = {
-#     syncMode = "IMPORT"
-# 	mapper = "HardcodedMapper"
-#   }
-# }
