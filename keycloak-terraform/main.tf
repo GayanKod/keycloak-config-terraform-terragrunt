@@ -50,6 +50,7 @@ resource "keycloak_openid_client" "service" {
 	exclude_session_state_from_auth_response	= false  
 }
 
+# Create roles according to the scopes passed to the variable called included_scopes
 
 resource "keycloak_role" "role_one" {
 	realm_id = keycloak_realm.realm.id
@@ -69,6 +70,7 @@ resource "keycloak_role" "role_three" {
 	count = contains(var.included_scopes, "scope_three") ? 1 : 0
 }
 
+# Create keycloak authentication flow (Copy of Browser Authentication flow)
 
 resource "keycloak_authentication_flow" "copy-of-browser-flow" {
   realm_id = keycloak_realm.realm.id
@@ -152,3 +154,28 @@ resource "keycloak_authentication_execution_config" "config" {
   }
 }
 
+
+# Create Identify Provider and Config 
+
+resource "keycloak_oidc_identity_provider" "oidc" {
+  realm             = keycloak_realm.realm.id
+  alias             = "oidc"
+  authorization_url = var.token_url
+  token_url         = var.server_url
+  client_id         = "example_id"
+  client_secret     = "example_token"
+  default_scopes    = "openid random profile"
+}
+
+resource "keycloak_attribute_importer_identity_provider_mapper" "oidc" {
+  realm                   = keycloak_realm.realm.id
+  name                    = "email-attribute-importer"
+  claim_name              = "my-email-claim"
+  identity_provider_alias = keycloak_oidc_identity_provider.oidc.alias
+  user_attribute          = "email"
+
+  # extra_config with syncMode is required in Keycloak 10+
+  extra_config = {
+    syncMode = "INHERIT"
+  }
+}
