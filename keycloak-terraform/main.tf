@@ -194,15 +194,103 @@ resource "keycloak_attribute_importer_identity_provider_mapper" "email" {
   }
 }
 
+//hardcoded role identity provider mapper
 resource "keycloak_hardcoded_role_identity_provider_mapper" "ad-user-mapper" {
   realm                   = keycloak_realm.realm.id
-  name                    = "ad-user-mapper"
+  name                    = "hardcoded-role-mapper"
   identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
-  role                    = "TRACE_AD_USER"
+  role                    = "HARDCODED_ROLE"
 
   #KC10 support
   extra_config = {
     syncMode = "INHERIT"
   }
 }
+
+//user template importer identify provider mapper
+resource "keycloak_user_template_importer_identity_provider_mapper" "username" {
+  realm                   = keycloak_realm.realm.id
+  name                    = "username"
+  identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
+  template                = "$${CLAIM.given_name}"
+
+  #KC10 support
+  extra_config = {
+    syncMode = "LEGACY"
+  }
+}
+
+//Advanced Group Identity Provider Mappers
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-one" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "group-mapper-one"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "groupone" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/GROUP_ONE"
+  }
+}
+
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-two" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "group-mapper-two"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "grouptwo" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/GROUP_TWO"
+  }
+}
+
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-three" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "group-mapper-three"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "groupthree" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/GROUP_THREE"
+  }
+}
+
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-four" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "group-mapper-four"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "groupfour" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/GROUP_FOUR"
+  }
+}
+
+
+
+
+
 
