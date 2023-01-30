@@ -157,10 +157,10 @@ resource "keycloak_authentication_execution_config" "config" {
 
 # Create Identify Provider and Config 
 
-resource "keycloak_oidc_identity_provider" "mesterID" {
+resource "keycloak_oidc_identity_provider" "externalID" {
   realm             	= keycloak_realm.realm.id
-  alias             	= "mesterID"
-  display_name 			= "Mester ID"
+  alias             	= "externalID"
+  display_name 			= "External ID"
   enabled 				= true
   store_token 			= false
   trust_email 			= false
@@ -185,12 +185,24 @@ resource "keycloak_attribute_importer_identity_provider_mapper" "email" {
   realm                   = keycloak_realm.realm.id
   name                    = "email"
   claim_name              = "email"
-  identity_provider_alias = keycloak_oidc_identity_provider.mesterID.alias
+  identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
   user_attribute          = "email"
 
   # extra_config with syncMode is required in Keycloak 10+
   extra_config = {
     syncMode = "IMPORT"
+  }
+}
+
+resource "keycloak_hardcoded_role_identity_provider_mapper" "ad-user-mapper" {
+  realm                   = keycloak_realm.realm.id
+  name                    = "ad-user-mapper"
+  identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
+  role                    = "TRACE_AD_USER"
+
+  #KC10 support
+  extra_config = {
+    syncMode = "INHERIT"
   }
 }
 
