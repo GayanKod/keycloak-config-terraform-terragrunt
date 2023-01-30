@@ -197,9 +197,9 @@ resource "keycloak_attribute_importer_identity_provider_mapper" "email" {
 //hardcoded role identity provider mapper
 resource "keycloak_hardcoded_role_identity_provider_mapper" "ad-user-mapper" {
   realm                   = keycloak_realm.realm.id
-  name                    = "ad-user-mapper"
+  name                    = "hardcoded-role-mapper"
   identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
-  role                    = "TRACE_AD_USER"
+  role                    = "HARDCODED_ROLE"
 
   #KC10 support
   extra_config = {
@@ -221,9 +221,9 @@ resource "keycloak_user_template_importer_identity_provider_mapper" "username" {
 }
 
 //Advanced Group Identity Provider Mappers
-resource "keycloak_custom_identity_provider_mapper" "MG_LOGISTICS-group-mapper" {
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-one" {
   realm                    = keycloak_realm.realm.id
-  name                     = "MG_LOGISTICS-group-mapper"
+  name                     = "group-mapper-one"
   identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
   identity_provider_mapper = "oidc-advanced-group-idp-mapper"
 
@@ -231,16 +231,16 @@ resource "keycloak_custom_identity_provider_mapper" "MG_LOGISTICS-group-mapper" 
   extra_config = {
     syncMode = "INHERIT"
     claims = jsonencode([
-      { key = "roles", value = "logistics" }
+      { key = "roles", value = "groupone" }
     ])
     "are.claim.values.regex" = "false"
-    group = "/MG_LOGISTICS"
+    group = "/GROUP_ONE"
   }
 }
 
-resource "keycloak_custom_identity_provider_mapper" "MG_SELLER-group-mapper" {
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-two" {
   realm                    = keycloak_realm.realm.id
-  name                     = "MG_SELLER-group-mapper"
+  name                     = "group-mapper-two"
   identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
   identity_provider_mapper = "oidc-advanced-group-idp-mapper"
 
@@ -248,16 +248,16 @@ resource "keycloak_custom_identity_provider_mapper" "MG_SELLER-group-mapper" {
   extra_config = {
     syncMode = "INHERIT"
     claims = jsonencode([
-      { key = "roles", value = "selger" }
+      { key = "roles", value = "grouptwo" }
     ])
     "are.claim.values.regex" = "false"
-    group = "/MG_SELLER"
+    group = "/GROUP_TWO"
   }
 }
 
-resource "keycloak_custom_identity_provider_mapper" "MG_TRANSPORT_ADMIN-group-mapper" {
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-three" {
   realm                    = keycloak_realm.realm.id
-  name                     = "MG_TRANSPORT_ADMIN-group-mapper"
+  name                     = "group-mapper-three"
   identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
   identity_provider_mapper = "oidc-advanced-group-idp-mapper"
 
@@ -265,16 +265,16 @@ resource "keycloak_custom_identity_provider_mapper" "MG_TRANSPORT_ADMIN-group-ma
   extra_config = {
     syncMode = "INHERIT"
     claims = jsonencode([
-      { key = "roles", value = "transportadmin" }
+      { key = "roles", value = "groupthree" }
     ])
     "are.claim.values.regex" = "false"
-    group = "/MG_TRANSPORT_ADMIN"
+    group = "/GROUP_THREE"
   }
 }
 
-resource "keycloak_custom_identity_provider_mapper" "MG_WAREHOUSE_ADMIN-group-mapper" {
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-four" {
   realm                    = keycloak_realm.realm.id
-  name                     = "MG_WAREHOUSE_ADMIN-group-mapper"
+  name                     = "group-mapper-four"
   identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
   identity_provider_mapper = "oidc-advanced-group-idp-mapper"
 
@@ -282,10 +282,10 @@ resource "keycloak_custom_identity_provider_mapper" "MG_WAREHOUSE_ADMIN-group-ma
   extra_config = {
     syncMode = "INHERIT"
     claims = jsonencode([
-      { key = "roles", value = "lageradmin" }
+      { key = "roles", value = "groupfour" }
     ])
     "are.claim.values.regex" = "false"
-    group = "/MG_WAREHOUSE_ADMIN"
+    group = "/GROUP_FOUR"
   }
 }
 
