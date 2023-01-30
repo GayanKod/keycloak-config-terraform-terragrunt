@@ -194,6 +194,7 @@ resource "keycloak_attribute_importer_identity_provider_mapper" "email" {
   }
 }
 
+//hardcoded role identity provider mapper
 resource "keycloak_hardcoded_role_identity_provider_mapper" "ad-user-mapper" {
   realm                   = keycloak_realm.realm.id
   name                    = "ad-user-mapper"
@@ -205,4 +206,19 @@ resource "keycloak_hardcoded_role_identity_provider_mapper" "ad-user-mapper" {
     syncMode = "INHERIT"
   }
 }
+
+//user template importer identify provider mapper
+resource "keycloak_user_template_importer_identity_provider_mapper" "username" {
+  realm                   = keycloak_realm.realm.id
+  name                    = "username"
+  identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
+  template                = "$${CLAIM.given_name}"
+
+  #KC10 support
+  extra_config = {
+    syncMode = "LEGACY"
+  }
+}
+
+
 
