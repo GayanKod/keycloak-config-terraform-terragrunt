@@ -50,6 +50,7 @@ resource "keycloak_openid_client" "service" {
 	exclude_session_state_from_auth_response	= false  
 }
 
+# Create roles according to the scopes passed to the variable called included_scopes
 
 resource "keycloak_role" "role_one" {
 	realm_id = keycloak_realm.realm.id
@@ -69,6 +70,7 @@ resource "keycloak_role" "role_three" {
 	count = contains(var.included_scopes, "scope_three") ? 1 : 0
 }
 
+# Create keycloak authentication flow (Copy of Browser Authentication flow)
 
 resource "keycloak_authentication_flow" "copy-of-browser-flow" {
   realm_id = keycloak_realm.realm.id
@@ -151,4 +153,144 @@ resource "keycloak_authentication_execution_config" "config" {
     defaultProvider = "idp-XXX"
   }
 }
+
+
+# Create Identify Provider and Config 
+
+resource "keycloak_oidc_identity_provider" "externalID" {
+  realm             	= keycloak_realm.realm.id
+  alias             	= "externalID"
+  display_name 			= "External ID"
+  enabled 				= true
+  store_token 			= false
+  trust_email 			= false
+  hide_on_login_page 	= false 
+  authorization_url 	= var.token_url
+  token_url         	= var.server_url
+  logout_url 			= "https://example.com/logout_url"
+  backchannel_supported = false
+  disable_user_info 	= false
+  user_info_url 		= "https://example.com/user_info_url"
+  client_id         	= "sample-client-id"
+  client_secret     	= "sample-client-secret"
+  issuer 				= "https://example.com/issuer"
+  default_scopes    	= "openid profile email"
+  validate_signature 	= true
+  jwks_url 				= "https://example.com/.well-known/jwks.json"
+  sync_mode 			= "FORCE"
+}
+
+
+resource "keycloak_attribute_importer_identity_provider_mapper" "email" {
+  realm                   = keycloak_realm.realm.id
+  name                    = "email"
+  claim_name              = "email"
+  identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
+  user_attribute          = "email"
+
+  # extra_config with syncMode is required in Keycloak 10+
+  extra_config = {
+    syncMode = "IMPORT"
+  }
+}
+
+//hardcoded role identity provider mapper
+resource "keycloak_hardcoded_role_identity_provider_mapper" "ad-user-mapper" {
+  realm                   = keycloak_realm.realm.id
+  name                    = "hardcoded-role-mapper"
+  identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
+  role                    = "HARDCODED_ROLE"
+
+  #KC10 support
+  extra_config = {
+    syncMode = "INHERIT"
+  }
+}
+
+//user template importer identify provider mapper
+resource "keycloak_user_template_importer_identity_provider_mapper" "username" {
+  realm                   = keycloak_realm.realm.id
+  name                    = "username"
+  identity_provider_alias = keycloak_oidc_identity_provider.externalID.alias
+  template                = "$${CLAIM.given_name}"
+
+  #KC10 support
+  extra_config = {
+    syncMode = "LEGACY"
+  }
+}
+
+//Advanced Group Identity Provider Mappers
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-one" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "group-mapper-one"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "groupone" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/GROUP_ONE"
+  }
+}
+
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-two" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "group-mapper-two"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "grouptwo" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/GROUP_TWO"
+  }
+}
+
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-three" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "group-mapper-three"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "groupthree" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/GROUP_THREE"
+  }
+}
+
+resource "keycloak_custom_identity_provider_mapper" "group-mapper-four" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "group-mapper-four"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "groupfour" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/GROUP_FOUR"
+  }
+}
+
+
+
+
+
 
