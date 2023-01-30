@@ -220,5 +220,42 @@ resource "keycloak_user_template_importer_identity_provider_mapper" "username" {
   }
 }
 
+//Advanced Group Identity Provider Mappers
+resource "keycloak_custom_identity_provider_mapper" "MG_LOGISTICS-group-mapper" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "MG_LOGISTICS-group-mapper"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "logistics" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/MG_LOGISTICS"
+  }
+}
+
+resource "keycloak_custom_identity_provider_mapper" "MG_LOGISTICS-group-mapper" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "MG_LOGISTICS-group-mapper"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "logistics" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/MG_LOGISTICS"
+  }
+}
+
+
+
 
 
