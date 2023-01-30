@@ -238,9 +238,9 @@ resource "keycloak_custom_identity_provider_mapper" "MG_LOGISTICS-group-mapper" 
   }
 }
 
-resource "keycloak_custom_identity_provider_mapper" "MG_LOGISTICS-group-mapper" {
+resource "keycloak_custom_identity_provider_mapper" "MG_SELLER-group-mapper" {
   realm                    = keycloak_realm.realm.id
-  name                     = "MG_LOGISTICS-group-mapper"
+  name                     = "MG_SELLER-group-mapper"
   identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
   identity_provider_mapper = "oidc-advanced-group-idp-mapper"
 
@@ -248,12 +248,47 @@ resource "keycloak_custom_identity_provider_mapper" "MG_LOGISTICS-group-mapper" 
   extra_config = {
     syncMode = "INHERIT"
     claims = jsonencode([
-      { key = "roles", value = "logistics" }
+      { key = "roles", value = "selger" }
     ])
     "are.claim.values.regex" = "false"
-    group = "/MG_LOGISTICS"
+    group = "/MG_SELLER"
   }
 }
+
+resource "keycloak_custom_identity_provider_mapper" "MG_TRANSPORT_ADMIN-group-mapper" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "MG_TRANSPORT_ADMIN-group-mapper"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "transportadmin" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/MG_TRANSPORT_ADMIN"
+  }
+}
+
+resource "keycloak_custom_identity_provider_mapper" "MG_WAREHOUSE_ADMIN-group-mapper" {
+  realm                    = keycloak_realm.realm.id
+  name                     = "MG_WAREHOUSE_ADMIN-group-mapper"
+  identity_provider_alias  = keycloak_oidc_identity_provider.externalID.alias
+  identity_provider_mapper = "oidc-advanced-group-idp-mapper"
+
+  // pulled from dev-tools, tbh.
+  extra_config = {
+    syncMode = "INHERIT"
+    claims = jsonencode([
+      { key = "roles", value = "lageradmin" }
+    ])
+    "are.claim.values.regex" = "false"
+    group = "/MG_WAREHOUSE_ADMIN"
+  }
+}
+
 
 
 
