@@ -290,6 +290,21 @@ resource "keycloak_custom_identity_provider_mapper" "group-mapper-four" {
 }
 
 
+resource "keycloak_group" "group" {
+  realm_id = keycloak_realm.realm.id
+  name     = "GROUP_ONE"
+}
+
+resource "keycloak_group_roles" "group_roles" {
+  realm_id = keycloak_realm.realm.id
+  group_id = keycloak_group.group.id
+
+  role_ids = [
+    keycloak_role.role_one == []? "" : keycloak_role.role_one[0].id, 
+    keycloak_role.role_two == []? "" : keycloak_role.role_two[0].id, 
+    keycloak_role.role_three == []? "" : keycloak_role.role_three[0].id 
+  ]
+}
 
 
 
